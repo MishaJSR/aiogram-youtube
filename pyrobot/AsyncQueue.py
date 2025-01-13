@@ -22,7 +22,7 @@ class AsyncQueue:
         url, chat = message.text.split("`")
         if await self.check_video(chat=chat, url=url):
             position = self.queue.qsize() + 1
-            self.stub.SendMessage(message_pb2.Message(text=f"Позиция в очереди: {position}",
+            self.stub.SendMessage(message_pb2.Message(text=f"Queue position: {position}",
                                                       tg_user_id=chat,
                                                       type_mess="position"))
             await self.queue.put((client, url, chat))
@@ -59,7 +59,7 @@ class AsyncQueue:
             try:
                 ydl.download(url)
             except:
-                self.stub.SendMessage(message_pb2.Message(text=f"Ошибка загрузки",
+                self.stub.SendMessage(message_pb2.Message(text=f"Loading error",
                                                           tg_user_id=chat,
                                                           type_mess="error_load"))
                 return
@@ -68,7 +68,8 @@ class AsyncQueue:
             with open(file_path, "rb") as _:
                 pass
         except FileNotFoundError:
-            self.stub.SendMessage(message_pb2.Message(text=f"Ошибка на стороне сервера",
+            self.stub.SendMessage(message_pb2.Message(text=f"Sever side error\n"
+                                                           f"Please try later",
                                                       tg_user_id=chat,
                                                       type_mess="error_server"))
             return
@@ -89,20 +90,20 @@ class AsyncQueue:
                 info = ydl.extract_info(url, download=False)
                 video_duration = info.get('duration', None)
         except yt_dlp.utils.DownloadError:
-            self.stub.SendMessage(message_pb2.Message(text=f"Качество видео слишком низкое для загрузки 720р\n",
+            self.stub.SendMessage(message_pb2.Message(text=f"Video quality is too low for 720p upload\n",
                                                               tg_user_id=chat,
                                                               type_mess="repeat"))
             return
         if video_duration > 3599:
-            self.stub.SendMessage(message_pb2.Message(text=f"Видео больше часа в данный момент не загружаем\n",
+            self.stub.SendMessage(message_pb2.Message(text=f"We are currently not loading videos for more than an hour\n",
                                                               tg_user_id=chat,
                                                               type_mess="repeat"))
             return
-        # for item in self.queue._queue:
-        #     if item[2] == chat:
-        #         self.stub.SendMessage(message_pb2.Message(text=f"Одно из Ваших видео уже находится в очереди\n"
-        #                                                        f"Пожалуйста дождитесь загрузки",
-        #                                                   tg_user_id=chat,
-        #                                                   type_mess="repeat"))
-        #         return
+        for item in self.queue._queue:
+            if item[2] == chat:
+                self.stub.SendMessage(message_pb2.Message(text=f"One of your videos is already in the queue\n"
+                                                               f"Please wait for loading",
+                                                          tg_user_id=chat,
+                                                          type_mess="repeat"))
+                return
         return True

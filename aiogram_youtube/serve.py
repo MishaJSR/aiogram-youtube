@@ -13,7 +13,7 @@ async def start_progress_bar(bot, tg_user_id, duration_in_seconds, mess_id, stop
         addition = "."
         for i in range(3):
             await bot.edit_message_text(
-                text=f"Видео отправляется {addition}",
+                text=f"Video is being sent {addition}",
                 chat_id=tg_user_id,
                 message_id=mess_id,
             )
@@ -45,10 +45,10 @@ class MessagingServiceServicer(message_pb2_grpc.MessageServiceServicer):
         if type_mess == "url":
             url, img_url, description = text.split("`")
             await self.bot.send_photo(chat_id=tg_user_id, photo=f"{img_url}", caption=f"<b>{description}</b>", parse_mode=ParseMode.HTML)
-            mess = await self.bot.send_message(chat_id=tg_user_id, text="Начало загрузки")
+            mess = await self.bot.send_message(chat_id=tg_user_id, text="Start loading")
             self.last_message_id = mess.message_id
         if type_mess == "progress":
-            mess = await self.bot.edit_message_text(text=f"Статус загрузки: {text}%",
+            mess = await self.bot.edit_message_text(text=f"Loading status: {text}%",
                                              chat_id=request.tg_user_id,
                                              message_id=self.last_message_id)
             self.message_status_id = mess.message_id
@@ -59,7 +59,7 @@ class MessagingServiceServicer(message_pb2_grpc.MessageServiceServicer):
         if type_mess == "send_video":
             await self.bot.delete_message(chat_id=tg_user_id, message_id=self.message_status_id)
             self.message_status_id = None
-            m = await self.bot.send_message(chat_id=tg_user_id, text="Отправляю видео")
+            m = await self.bot.send_message(chat_id=tg_user_id, text="Send video")
             self.message_send_video_id = m.message_id
             asyncio.create_task(start_progress_bar(bot=self.bot, tg_user_id=tg_user_id, duration_in_seconds=int(text),
                                                    mess_id=self.message_send_video_id, stop_event=self.stop_event))

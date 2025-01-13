@@ -50,7 +50,7 @@ async def create_bot():
 
 async def start_bot(bot, dp):
     await bot.delete_webhook(drop_pending_updates=True)
-    await bot.set_my_commands(commands=[BotCommand(command='start', description='Запустить бота')],
+    await bot.set_my_commands(commands=[BotCommand(command='start', description='Start bot')],
                               scope=BotCommandScopeAllPrivateChats())
     await dp.start_polling(bot)
 
