@@ -89,7 +89,12 @@ class AsyncQueue:
             with self.static_ydl as ydl:
                 info = ydl.extract_info(url, download=False)
                 video_duration = info.get('duration', None)
-        except yt_dlp.utils.DownloadError:
+        except yt_dlp.utils.DownloadError as error:
+            if "Unsupported URL" in error.msg:
+                self.stub.SendMessage(message_pb2.Message(text=f"{error.msg}\n",
+                                                          tg_user_id=chat,
+                                                          type_mess="repeat"))
+                return
             self.stub.SendMessage(message_pb2.Message(text=f"Video quality is too low for 720p upload\n",
                                                               tg_user_id=chat,
                                                               type_mess="repeat"))
