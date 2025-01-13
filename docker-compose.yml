@@ -1,0 +1,30 @@
+services:
+  pyrobot:
+    build:
+      context: pyrobot
+      dockerfile: Dockerfile
+    command: >
+      sh -c "poetry run python3 -m main"
+    restart: always
+    links:
+      - aioyou
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+  aioyou:
+    build:
+      context: aiogram_youtube
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+    command: >
+      sh -c "poetry run python3 -m main"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"

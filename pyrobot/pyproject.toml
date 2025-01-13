@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "pyrobot"
+version = "0.1.0"
+description = ""
+authors = ["develophub <mixan_45@mail.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pyrogram = "^2.0.106"
+tgcrypto = "^1.2.5"
+yt-dlp = "^2024.12.23"
+secretstorage = "^3.3.3"
+pydantic-settings = "^2.7.0"
+grpcio = "^1.68.1"
+grpcio-tools = "^1.68.1"
+validators = "^0.34.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

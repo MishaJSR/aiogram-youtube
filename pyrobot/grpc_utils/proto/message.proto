@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package messaging;
+
+message Message {
+  string text = 1;
+  string tg_user_id = 2;
+  string type_mess = 3;
+}
+
+service MessageService {
+  rpc SendMessage (Message) returns (Message) {}
+}
