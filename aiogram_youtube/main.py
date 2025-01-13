@@ -56,4 +56,4 @@ async def start_bot(bot, dp):
 
 if __name__ == "__main__":
     setup_logging()
-    asyncio.run(main())
+    asyncio.run(main())#
